@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Web App AR</title>
+    <!-- Librerie necessarie -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+        
+        <!-- Caricamento del Marker personalizzato -->
+        <a-marker type="pattern" url="simbolo.patt">
+            <!-- Testo che apparirà sopra il simbolo -->
+            <a-entity 
+                id="testo-dinamico"
+                position="0 0.5 0" 
+                rotation="-90 0 0"
+                scale="4 4 4"
+                text="value: In attesa...; color: #00FF00; align: center; font: https://cdn.aframe.io/fonts/Exo2Bold.fnt">
+            </a-entity>
+        </a-marker>
+
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        // INSERISCI QUI L'URL COPIATO DALLA DISTRIBUZIONE DI GOOGLE APPS SCRIPT
+        const API_URL = "https://script.google.com/macros/s/AKfycby8p0syPMR1yQiSn7f2z5cwA7s9CWjapi4huzftalI-tA49m9jYP7anY8fbP_eT8ESK/exec";
+
+        async function aggiornaTesto() {
+            try {
+                const response = await fetch(API_URL);
+                const dati = await response.json();
+                // Cerchiamo la riga con id 1
+                const riga = dati.find(item => item.id == 1);
+                if(riga) {
+                    document.querySelector('#testo-dinamico').setAttribute('text', 'value', riga.testo);
+                }
+            } catch (error) {
+                console.error("Errore recupero dati:", error);
+            }
+        }
+
+        // Carica il testo all'avvio e poi ogni 5 secondi
+        aggiornaTesto();
+        setInterval(aggiornaTesto, 5000);
+    </script>
+</body>
+</html>
